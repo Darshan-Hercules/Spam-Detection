@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS Spam Detection System - ML Dashboard</title>
+    
+    <!-- Google Fonts for Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js for Serverless Graphical Visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Application Title Header -->
+        <header>
+            <h1>SMS Spam Detection System</h1>
+            <p>Production Machine Learning Pipeline & Interactive Web Analytics</p>
+            <div>
+                <span class="model-badge">Champion Model: <span id="champion-model-name">Loading...</span></span>
+            </div>
+        </header>
+        
+        <!-- Main Dashboard Content Grid -->
+        <div class="dashboard-grid">
+            
+            <!-- Left Side: Real-time Predictor & Report Download -->
+            <div class="column-left">
+                
+                <!-- Prediction Panel -->
+                <div class="panel">
+                    <h2>🛡️ Real-Time Spam Classifier</h2>
+                    <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">
+                        Input an SMS message below. The client-side engine will preprocess the text, compute L2-normalized TF-IDF weights, and calculate category probability.
+                    </p>
+                    
+                    <div class="form-group">
+                        <label for="message-input">SMS Message Content:</label>
+                        <textarea id="message-input" placeholder="Type or paste your SMS message here (e.g., 'Claim your free tickets now!')"></textarea>
+                    </div>
+                    
+                    <button id="analyze-btn">
+                        <span>Analyze Message</span>
+                    </button>
+                    
+                    <!-- Color-Coded Result Alert Card -->
+                    <div id="result-card" class="result-card">
+                        <div id="result-title" class="result-header">
+                            <!-- Populated dynamically -->
+                        </div>
+                        <div class="confidence-label">
+                            <span>Classification Confidence:</span>
+                            <span id="confidence-percent" style="font-weight: 700;">0.00%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div id="progress-bar" class="progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PDF Report Download Card -->
+                <div class="panel">
+                    <h2>📄 Project Deliverables</h2>
+                    <div class="download-card">
+                        <p style="font-size: 0.9rem; color: #475569; margin-bottom: 12px;">
+                            An academic, portfolio-ready project report containing full technical details of the preprocessing pipeline, comparative models, mathematical derivations, and training evaluation summaries is available.
+                        </p>
+                        <a href="report.pdf" class="download-link" target="_blank">
+                            <span>⬇️ Download Project Report (report.pdf)</span>
+                        </a>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- Right Side: Dynamic Analysis & Visualizations -->
+            <div class="column-right">
+                
+                <!-- DYNAMIC Per-Message Analysis Panel (Updates on every prediction) -->
+                <div class="panel">
+                    <h2>📊 Live Message Analysis</h2>
+                    <p id="analysis-hint" style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px; font-style: italic;">
+                        Analyze a message to see live metrics here...
+                    </p>
+                    
+                    <div class="metrics-row">
+                        <div class="metric-card" id="card-spam-prob" style="transition: all 0.4s ease;">
+                            <div id="metric-spam-prob" class="metric-val">—</div>
+                            <div class="metric-lbl">Spam Probability</div>
+                        </div>
+                        <div class="metric-card" id="card-ham-prob" style="transition: all 0.4s ease;">
+                            <div id="metric-ham-prob" class="metric-val">—</div>
+                            <div class="metric-lbl">Ham Probability</div>
+                        </div>
+                        <div class="metric-card">
+                            <div id="metric-word-count" class="metric-val">—</div>
+                            <div class="metric-lbl">Word Count</div>
+                        </div>
+                        <div class="metric-card">
+                            <div id="metric-char-count" class="metric-val">—</div>
+                            <div class="metric-lbl">Char Count</div>
+                        </div>
+                    </div>
+
+                    <!-- Live Probability Bar -->
+                    <div style="margin-top: 18px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">
+                            <span style="color: #22c55e;">Ham</span>
+                            <span style="color: #ef4444;">Spam</span>
+                        </div>
+                        <div style="width: 100%; height: 14px; background: linear-gradient(to right, #dcfce7, #fee2e2); border-radius: 7px; position: relative; overflow: hidden;">
+                            <div id="prob-needle" style="position: absolute; top: -1px; width: 4px; height: 16px; background: #1e293b; border-radius: 2px; left: 50%; transition: left 0.6s cubic-bezier(0.1, 0.8, 0.1, 1);"></div>
+                        </div>
+                        <p id="prob-label" style="text-align: center; font-size: 0.78rem; color: #64748b; margin-top: 6px;">Awaiting input...</p>
+                    </div>
+                </div>
+
+                <!-- Confusion Matrix Panel -->
+                <div class="panel">
+                    <h3 style="font-size: 1rem; color: #334155; font-weight: 600;">🎯 Session Prediction Tracker</h3>
+                    <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 10px;">Tracks all messages you analyze in this session. The highlighted cell shows the latest prediction.</p>
+                    
+                    <div class="cm-grid-container">
+                        <table class="cm-table">
+                            <tr>
+                                <td></td>
+                                <td class="cm-header-cell" style="border-bottom: 1px solid #cbd5e1;">Classification</td>
+                                <td class="cm-header-cell" style="border-bottom: 1px solid #cbd5e1;">Count</td>
+                            </tr>
+                            <tr>
+                                <td class="cm-header-cell">✅</td>
+                                <td id="cm-ham-label" class="cm-cell cm-tn" style="font-size: 1rem;">Ham (Safe)</td>
+                                <td id="cm-ham-count" class="cm-cell cm-tn" style="font-size: 1.4rem; font-weight: 700;">0</td>
+                            </tr>
+                            <tr>
+                                <td class="cm-header-cell">🚨</td>
+                                <td id="cm-spam-label" class="cm-cell cm-fp" style="font-size: 1rem;">Spam (Threat)</td>
+                                <td id="cm-spam-count" class="cm-cell cm-fp" style="font-size: 1.4rem; font-weight: 700;">0</td>
+                            </tr>
+                            <tr>
+                                <td class="cm-header-cell">📊</td>
+                                <td class="cm-cell" style="font-size: 0.9rem; font-weight: 600; color: #475569;">Total Analyzed</td>
+                                <td id="cm-total-count" class="cm-cell" style="font-size: 1.4rem; font-weight: 700;">0</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Dynamic Probability Distribution -->
+                <div class="panel">
+                    <h2>📈 Spam vs Ham Probability</h2>
+                    <p style="color: #64748b; font-size: 0.82rem; margin-bottom: 10px;">Shows dataset distribution initially. Updates to show the current message's spam vs ham probability after analysis.</p>
+                    <div class="chart-container" style="height: 220px;">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Dynamic Per-Message Keyword Analysis -->
+                <div class="panel">
+                    <h2>🔑 Message Word Analysis</h2>
+                    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 20px;">
+                        Shows which words <strong>in your message</strong> are pushing the prediction toward Spam or Ham. Updates dynamically on every analysis.
+                    </p>
+                    
+                    <div style="margin-bottom: 25px;">
+                        <h3 style="font-size: 0.95rem; color: #991b1b; font-weight: 600; margin-bottom: 8px;">🔴 Words Pushing Toward Spam</h3>
+                        <div class="chart-container" style="height: 220px;">
+                            <canvas id="spamKeywordsChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 style="font-size: 0.95rem; color: #166534; font-weight: 600; margin-bottom: 8px;">🟢 Words Pushing Toward Ham</h3>
+                        <div class="chart-container" style="height: 220px;">
+                            <canvas id="hamKeywordsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collapsible Static Model Training Metrics -->
+                <details class="panel" style="cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 1.1rem; color: #334155; list-style: none; display: flex; align-items: center; gap: 8px;">
+                        <span>📋</span> Model Training Results (Click to expand)
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 12px;">
+                            These are the fixed performance scores of the champion model evaluated on the holdout test set during training. They represent the model's overall quality and do not change per message.
+                        </p>
+                        <div class="metrics-row">
+                            <div class="metric-card champion">
+                                <div id="metric-f1" class="metric-val">0.00%</div>
+                                <div class="metric-lbl">F1-Score</div>
+                            </div>
+                            <div class="metric-card">
+                                <div id="metric-accuracy" class="metric-val">0.00%</div>
+                                <div class="metric-lbl">Accuracy</div>
+                            </div>
+                            <div class="metric-card">
+                                <div id="metric-precision" class="metric-val">0.00%</div>
+                                <div class="metric-lbl">Precision</div>
+                            </div>
+                            <div class="metric-card">
+                                <div id="metric-recall" class="metric-val">0.00%</div>
+                                <div class="metric-lbl">Recall</div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <!-- 1. Load exported model parameters first -->
+    <script src="src/model_data.js"></script>
+    <!-- 2. Load UI binding and browser inference script second -->
+    <script src="static/js/app.js"></script>
+</body>
+</html>

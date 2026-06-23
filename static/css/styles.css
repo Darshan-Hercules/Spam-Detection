@@ -1,0 +1,348 @@
+/* General Reset & Page Layout */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #f3f4f6;
+    color: #1f2937;
+    line-height: 1.6;
+    padding: 30px 10px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Header Section with Elegant Gradient */
+header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f766e 100%);
+    color: white;
+    padding: 40px 30px;
+    border-radius: 16px;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+header h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+}
+
+header p {
+    font-size: 1.1rem;
+    color: #cbd5e1;
+    font-weight: 300;
+}
+
+/* Two-column layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+@media (min-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 1.2fr 1fr;
+    }
+}
+
+/* Dashboard Panels / Cards */
+.panel {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 30px;
+}
+
+.panel h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Text Input & Buttons */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #4b5563;
+}
+
+textarea {
+    width: 100%;
+    height: 140px;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: none;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #0f766e;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+}
+
+button {
+    width: 100%;
+    background-color: #0f766e;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+button:hover {
+    background-color: #0d9488;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+}
+
+/* Prediction Output Cards */
+.result-card {
+    display: none;
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 12px;
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-card.spam {
+    background-color: #fee2e2;
+    border-left: 6px solid #ef4444;
+    color: #991b1b;
+}
+
+.result-card.ham {
+    background-color: #dcfce7;
+    border-left: 6px solid #22c55e;
+    color: #166534;
+}
+
+.result-header {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Progress/Confidence Bar */
+.confidence-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-track {
+    width: 100%;
+    height: 10px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 5px;
+    width: 0%;
+    transition: width 0.8s cubic-bezier(0.1, 0.8, 0.1, 1);
+}
+
+.spam .progress-bar {
+    background-color: #ef4444;
+}
+
+.ham .progress-bar {
+    background-color: #22c55e;
+}
+
+/* Metrics Cards (Overall Summary) */
+.metrics-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+@media (min-width: 576px) {
+    .metrics-row {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.metric-card {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 15px 10px;
+    text-align: center;
+    border: 1px solid #f1f5f9;
+}
+
+.metric-card.champion {
+    background: #f0fdfa;
+    border: 1px solid #ccfbf1;
+}
+
+.metric-val {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.metric-lbl {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.05em;
+}
+
+/* Interactive Plots container */
+.chart-container {
+    position: relative;
+    width: 100%;
+    margin-top: 15px;
+}
+
+/* Confusion Matrix Grid (HTML representation) */
+.cm-grid-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.cm-table {
+    border-collapse: collapse;
+    width: 260px;
+    height: 180px;
+    text-align: center;
+}
+
+.cm-header-cell {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4b5563;
+    padding: 4px;
+}
+
+.cm-label-left {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4b5563;
+    padding: 4px;
+}
+
+.cm-cell {
+    border: 2px solid #e5e7eb;
+    width: 100px;
+    height: 70px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* Grid Cell Heatmap shading */
+.cm-tn { background-color: #eff6ff; }
+.cm-fp { background-color: #fef2f2; }
+.cm-fn { background-color: #fffbeb; }
+.cm-tp { background-color: #ecfdf5; }
+
+.cm-cell span {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #64748b;
+    margin-top: 4px;
+    text-transform: uppercase;
+}
+
+/* Download Section styling */
+.download-card {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.download-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #0f766e;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.download-link:hover {
+    color: #0d9488;
+    text-decoration: underline;
+}
+
+.model-badge {
+    display: inline-block;
+    background-color: #0f766e;
+    color: white;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 100px;
+    font-weight: 600;
+    margin-top: 5px;
+}
